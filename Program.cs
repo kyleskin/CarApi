@@ -28,9 +28,9 @@ if (app.Environment.IsDevelopment())
 
 async Task<List<Car>> SearchWithFilters(CarDb db, string? make, string? model, string? color, int? year) =>
     await db.Cars.Where(c =>
-                        (make == null || c.Make == make)
-                        && (model == null || c.Model == model)
-                        && (color == null || c.Color == color)
+                        (make == null || c.Make.ToLower() == make.ToLower())
+                        && (model == null || c.Model.ToLower() == model.ToLower())
+                        && (color == null || c.Color.ToLower() == color.ToLower())
                         && (year == null || c.Year == year)).ToListAsync<Car>();
 
 app.MapGet("/cars", async (CarDb db,
