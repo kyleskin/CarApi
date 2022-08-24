@@ -26,8 +26,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/", () => "Hello World!");
-
 async Task<List<Car>> SearchWithFilters(CarDb db, string? make, string? model, string? color, int? year) =>
     await db.Cars.Where(c =>
                         (make == null || c.Make == make)
@@ -83,6 +81,18 @@ app.MapPut("/cars/{id}", async (Guid id, Car inputCar, CarDb db) =>
     await db.SaveChangesAsync();
 
     return Results.NoContent();
+});
+
+app.MapDelete("/cars/{id}", async (Guid id, CarDb db) =>
+{
+    if (await db.Cars.FindAsync(id) is Car car)
+    {
+        db.Cars.Remove(car);
+        await db.SaveChangesAsync();
+        return Results.Ok();
+    }
+
+    return Results.NotFound();
 });
 
 app.Run();
