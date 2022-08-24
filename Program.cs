@@ -17,6 +17,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
 var app = builder.Build();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 
 // Configure the HTTP request pipeline.
@@ -33,13 +35,13 @@ async Task<List<Car>> SearchWithFilters(CarDb db, string? make, string? model, s
                         && (color == null || c.Color.ToLower() == color.ToLower())
                         && (year == null || c.Year == year)).ToListAsync<Car>();
 
-app.MapGet("/cars", async (CarDb db,
+app.MapGet("api/cars", async (CarDb db,
                            [FromBody] CarSearchParams searchParams) =>
     await SearchWithFilters(db, searchParams.Make, searchParams.Model, searchParams.Color, searchParams.Year))
     .Produces<List<Car>>(StatusCodes.Status200OK)
     .WithTags("Getters");
 
-app.MapGet("/cars/", async (CarDb db,
+app.MapGet("api/cars/", async (CarDb db,
                           string? make,
                           string? model,
                           string? color,
@@ -57,7 +59,7 @@ app.MapGet("/cars/{id}", async (Guid id, CarDb db) =>
     .Produces<Car>(StatusCodes.Status200OK)
     .WithTags("Getters");
 
-app.MapPost("/cars", async (Car car, CarDb db) =>
+app.MapPost("api/cars", async (Car car, CarDb db) =>
 {
     db.Cars.Add(car);
     await db.SaveChangesAsync();
@@ -67,7 +69,7 @@ app.MapPost("/cars", async (Car car, CarDb db) =>
     .Produces<Car>(StatusCodes.Status201Created)
     .WithTags("Post");
 
-app.MapPut("/cars/{id}", async (Guid id, Car inputCar, CarDb db) =>
+app.MapPut("api/cars/{id}", async (Guid id, Car inputCar, CarDb db) =>
 {
     var car = await db.Cars.FindAsync(id);
     if (car is null) return Results.NotFound();
@@ -83,7 +85,7 @@ app.MapPut("/cars/{id}", async (Guid id, Car inputCar, CarDb db) =>
     return Results.NoContent();
 });
 
-app.MapDelete("/cars/{id}", async (Guid id, CarDb db) =>
+app.MapDelete("api/cars/{id}", async (Guid id, CarDb db) =>
 {
     if (await db.Cars.FindAsync(id) is Car car)
     {
