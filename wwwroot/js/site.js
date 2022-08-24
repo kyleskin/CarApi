@@ -5,8 +5,8 @@ async function getCars() {
   const make = document.getElementById("make").value.trim();
   const model = document.getElementById("model").value.trim();
   const color = document.getElementById("color").value.trim();
+  let getUri = uri;
 
-  getUri = uri;
   searchParams = new URLSearchParams();
   if (year) searchParams.append("year", year);
   if (make) searchParams.append("make", make);
@@ -27,9 +27,9 @@ async function getCars() {
     console.log(data);
   } catch (error) {
     console.log(error);
+  } finally {
+    clearSearchForm();
   }
-
-  clearSearchForm();
 }
 
 function clearSearchForm() {
