@@ -65,7 +65,7 @@ app.MapGet("api/cars/", async (CarDb db,
     .WithTags("Getters");
 
 
-app.MapGet("api/cars/{id}", async (Guid id, CarDb db) =>
+app.MapGet("api/cars/{id}", async (int id, CarDb db) =>
     await db.Cars.FindAsync(id)
      is Car car
         ? Results.Ok(car)
