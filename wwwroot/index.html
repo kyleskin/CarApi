@@ -2,10 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/site.css" asp-apend-version="true" />
-    <title>Document</title>
+    <link rel="stylesheet" href="css/site.css" />
+    <title>Car API</title>
   </head>
   <body>
     <h1>Car API Practice</h1>
@@ -17,6 +15,20 @@
       <input type="text" id="color" placeholder="Silver" />
       <input type="button" onclick="getCars()" value="FETCH API" />
     </form>
+
+    <div class="table-container">
+      <table id="carsTable">
+        <tr>
+          <th>Year</th>
+          <th>Make</th>
+          <th>Model</th>
+          <th>Color</th>
+          <th>VIN</th>
+        </tr>
+        <tbody id="cars"></tbody>
+      </table>
+    </div>
+
     <script src="js/site.js" asp-apend-version="true"></script>
   </body>
 </html>

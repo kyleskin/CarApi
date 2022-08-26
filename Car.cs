@@ -8,7 +8,7 @@ namespace CarApi;
 
 public class Car
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     [Required]
     public string Make { get; set; } = string.Empty;
     [Required]
