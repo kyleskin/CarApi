@@ -1,4 +1,5 @@
 using CarApi;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,16 +10,30 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddDbContext<CarDb>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddCors();
 
 
 var app = builder.Build();
+// app.UseHttpsRedirection();
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
+app.UseCors(options =>
+{
+    options.AllowAnyOrigin();
+    options.AllowAnyHeader();
+    options.AllowAnyMethod();
+});
 
 
 // Configure the HTTP request pipeline.
@@ -35,8 +50,7 @@ async Task<List<Car>> SearchWithFilters(CarDb db, string? make, string? model, s
                         && (color == null || c.Color.ToLower() == color.ToLower())
                         && (year == null || c.Year == year)).ToListAsync<Car>();
 
-app.MapGet("api/cars", async (CarDb db,
-                           [FromBody] CarSearchParams searchParams) =>
+app.MapGet("api/cars", async (CarDb db, [FromBody] CarSearchParams searchParams) =>
     await SearchWithFilters(db, searchParams.Make, searchParams.Model, searchParams.Color, searchParams.Year))
     .Produces<List<Car>>(StatusCodes.Status200OK)
     .WithTags("Getters");
@@ -51,7 +65,7 @@ app.MapGet("api/cars/", async (CarDb db,
     .WithTags("Getters");
 
 
-app.MapGet("/cars/{id}", async (Guid id, CarDb db) =>
+app.MapGet("api/cars/{id}", async (Guid id, CarDb db) =>
     await db.Cars.FindAsync(id)
      is Car car
         ? Results.Ok(car)

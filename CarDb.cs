@@ -8,5 +8,9 @@ public class CarDb : DbContext
     public CarDb(DbContextOptions<CarDb> options)
         : base(options) { }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
+        optionsBuilder.UseNpgsql()
+                      .UseSnakeCaseNamingConvention();
+
     public DbSet<Car> Cars => Set<Car>();
 }
