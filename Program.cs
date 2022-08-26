@@ -83,7 +83,7 @@ app.MapPost("api/cars", async (Car car, CarDb db) =>
     .Produces<Car>(StatusCodes.Status201Created)
     .WithTags("Post");
 
-app.MapPut("api/cars/{id}", async (Guid id, Car inputCar, CarDb db) =>
+app.MapPut("api/cars/{id}", async (int id, Car inputCar, CarDb db) =>
 {
     var car = await db.Cars.FindAsync(id);
     if (car is null) return Results.NotFound();
@@ -99,7 +99,7 @@ app.MapPut("api/cars/{id}", async (Guid id, Car inputCar, CarDb db) =>
     return Results.NoContent();
 });
 
-app.MapDelete("api/cars/{id}", async (Guid id, CarDb db) =>
+app.MapDelete("api/cars/{id}", async (int id, CarDb db) =>
 {
     if (await db.Cars.FindAsync(id) is Car car)
     {
